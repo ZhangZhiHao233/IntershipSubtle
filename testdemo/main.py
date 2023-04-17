@@ -24,7 +24,7 @@ if not os.path.exists(mask_path):
 dataset_path = '../../input_path/dataset_pd_fs.npz'
 device = torch.device("cuda:1")
 CHECKPOINT_PATH_WANDB = './latest.pth'
-
+my_yaml_file = './config-defaults.yaml'
 EPOCHES = 300
 BATCHSIZE = 4
 
@@ -157,51 +157,62 @@ gb = AttU_Net(1, 1).to(device)
 optimizer_gb = optim.Adam(gb.parameters(), lr=0.0001, betas=(0.9, 0.99), weight_decay=0.0001)
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument(
-        "-b",
-        "--batch_size",
-        type=int,
-        default=32,
-        help="Batch size")
-    parser.add_argument(
-        "-e",
-        "--epochs",
-        type=int,
-        default=50,
-        help="Number of training epochs")
-    parser.add_argument(
-        "-lr",
-        "--learning_rate",
-        type=int,
-        default=0.001,
-        help="Learning rate")
+    # parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    # parser.add_argument(
+    #     "-b",
+    #     "--batch_size",
+    #     type=int,
+    #     default=32,
+    #     help="Batch size")
+    # parser.add_argument(
+    #     "-e",
+    #     "--epochs",
+    #     type=int,
+    #     default=50,
+    #     help="Number of training epochs")
+    # parser.add_argument(
+    #     "-lr",
+    #     "--learning_rate",
+    #     type=int,
+    #     default=0.001,
+    #     help="Learning rate")
 
+    # hyperparameter_defaults = dict(
+    #     dropout=0.5,
+    #     batch_size=100,
+    #     learning_rate=0.001,
+    # )
 
-resume = True
-    config = {
-        "epochs": EPOCHES,
-        "learning_rate": 0.0001,
-        "batch_size": BATCHSIZE
-    }
-
-    run = wandb.init(
-        project="test_wandb",
-        group="experiment_1",
-        notes="My first experiment",
-        tags=["baseline", "unet1"],
-        config=config,
-        resume=resume
+    config_dictionary = dict(
+        yaml=my_yaml_file
+        # params=hyperparameter_defaults,
     )
-    last_epoch=0
-    if wandb.run.resumed:
-        checkpoint = torch.load(wandb.restore(CHECKPOINT_PATH_WANDB))
-        gb.load_state_dict(checkpoint['model_state_dict'])
-        optimizer_gb.load_state_dict(checkpoint['optimizer_state_dict'])
-        last_epoch = checkpoint['epoch']
-        loss = checkpoint['loss']
-
-        print("resume from epoch%d, loss=%f" % (last_epoch, loss))
+    wandb.init(config=config_dictionary)
+    print(wandb.config['only test'])
+    # resume = True
+    # config = {
+    #     "epochs": EPOCHES,
+    #     "learning_rate": 0.0001,
+    #     "batch_size": BATCHSIZE
+    # }
+    #
+    # run = wandb.init(
+    #     project="test_wandb",
+    #     group="experiment_1",
+    #     notes="My first experiment",
+    #     tags=["baseline", "unet1"],
+    #     config=config,
+    #     resume=resume
+    # )
+    # last_epoch=0
+    # if wandb.run.resumed:
+    #     checkpoint = torch.load(wandb.restore(CHECKPOINT_PATH_WANDB))
+    #     gb.load_state_dict(checkpoint['model_state_dict'])
+    #     optimizer_gb.load_state_dict(checkpoint['optimizer_state_dict'])
+    #     last_epoch = checkpoint['epoch']
+    #     loss = checkpoint['loss']
+    #
+    #     print("resume from epoch%d, loss=%f" % (last_epoch, loss))
 
     # if os.path.exists(model_path):
     #     dir_list = os.listdir(model_path)
