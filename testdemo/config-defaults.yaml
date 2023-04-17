@@ -1,0 +1,17 @@
+# config-defaults.yaml
+# sample config defaults file
+only test:
+  desc: if only train
+  value: False
+
+train epochs:
+  desc: Number of epochs to train over
+  value: 100
+
+test interval:
+  desc: interval of epochs to test
+  value: 1
+
+batch_size:
+  desc: Size of each mini-batch
+  value: 4
